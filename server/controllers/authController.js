@@ -13,11 +13,16 @@ exports.registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt)
 
     try{
-        const user = new User({name, email, password});
+        const user = new User({name, email, password: hashedPassword});
         await user.save();
         res.status(201).json({
             message: 'user registered successfully'
         });
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();// 6 digit
+        console.log(`OTP for ${email}: ${otp}`);
+
+        
     } catch(error) {
         res.status(400).json({
             error: error.message
